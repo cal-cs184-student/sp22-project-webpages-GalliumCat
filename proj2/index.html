@@ -1,7 +1,212 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Project 2 here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <style>
+    body {
+      padding: 100px;
+      width: 1000px;
+      margin: auto;
+      text-align: left;
+      font-weight: 300;
+      font-family: 'Open Sans', sans-serif;
+      color: #121212;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+  </style>
+  <title>CS 184 Mesh Editor</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+  <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2020</h1>
+  <h1 align="middle">Project 2: Mesh Editor</h1>
+  <h2 align="middle">Kathiravan Kannan</h2>
+
+  <br><br>
+
+      <div>
+
+          <h2 align="middle">Overview</h2>
+          <p>
+              In this assignment, I implemented 2d and 3d bezier curves as well as flip/split/upsample operations on a mesh. These operations involved keeping track
+              of numerous pointers and reassignments and creating a method to compute centroids. Overall, this assignment involved keeping many variables in my mind
+              at a time to ensure the mesh remained consistent.
+          </p>
+
+          <h2 align="middle">Section I: Bezier Curves and Surfaces</h2>
+
+          <h3 align="middle">Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+
+          De Casteljau's algorithm works by repeatedly calculating linear interpolations of various control points until only one point is left. By varying t,
+          the entire curve can be formed.
+
+
+          <br />
+          <br />
+
+          <div align="middle">
+              <img src="img/beziers.png" align="middle" width="800px" />
+              <figcaption align="middle">The algorithm in action</figcaption>
+          </div>
+          <br />
+          <br />
+
+          <div align="middle">
+              <img src="img/beziers2.png" align="middle" width="600px" />
+              <figcaption align="middle">The effects of modifying t</figcaption>
+          </div>
+
+
+          <h3 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau subdivision</h3>
+
+          <p>
+              The same de Casteljau algorithm can also be applied to 3d space. To do this, the key insight is that a plane is formed by multiple curves, all which occupy a 2d space.
+              Thus, applying the algorithm as if you were in a 2-d space, then using those outputs as another input to the algorithm allows evaluation of bezier surfaces.
+          </p>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/bezierTeapot.png" align="middle" width="400px" />
+              <figcaption align="middle">A teapot evaluated using de Casteljau subdivision</figcaption>
+          </div>
+
+          <h2 align="middle">Section II: Sampling</h2>
+
+          <h3 align="middle">Part 3: Average normals for half-edge meshes</h3>
+
+          <p>
+              I implemented area-weighted vertex normals by iterating over faces adjacent to a vertex and multiplying each normal by its norm. Then I averaged by the
+              over the number of adjacent faces and normalized the resulting vector to get the resulting normal.
+          </p>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/teapotShading.png" align="middle" width="400px" />
+              <figcaption align="middle">A teapot with flat/Phong shading</figcaption>
+          </div>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/beetleShading.png" align="middle" width="400px" />
+              <figcaption align="middle">A beetle with flat/Phong shading</figcaption>
+          </div>
+
+
+          <h3 align="middle">Part 4: Half-edge flip</h3>
+
+          <p>
+              Edge flipping was performed using a diagram with every edge, half edge, vertex, and face labelled before/after. Using this diagram helped avoid
+              all errors relating to confusing pointer reassignment.
+          </p>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/flipDiagram.png" align="middle" width="800px" />
+              <figcaption align="middle"><a href="https://cmu-graphics.github.io/Scotty3D/meshedit/local/edge_flip_diagram.png">Source</a></figcaption>
+          </div>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/teapotFlip.png" align="middle" width="400px" />
+              <figcaption align="middle">A teapot before/after various edge flips</figcaption>
+          </div>
+
+
+
+          <h3 align="middle">Part 5: Half-edge split</h3>
+
+          <p>
+              Half edge splits were implemented in a similar manner. This time labels were implicit rather than written on the diagram, so there was a little
+              more to keep track of mentally. Still, there were only a few hiccups in the forms of typos that were easily resolved.
+          </p>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/splitDiagram.png" align="middle" width="800px" />
+              <figcaption align="middle"><a href="https://cs184.eecs.berkeley.edu/cs184_sp17_content/article_images/9_9.jpg">Source</a></figcaption>
+          </div>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/teapotSplit.png" align="middle" width="400px" />
+              <figcaption align="middle">A teapot after various edge splits</figcaption>
+          </div>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/teapotFlipSplit.png" align="middle" width="400px" />
+              <figcaption align="middle">A teapot after numerous flips and splits</figcaption>
+          </div>
+
+          <h3 align="middle">Part 6: Loop subdivision for mesh upsampling</h3>
+
+          <p>
+              Upsampling was implemented by first computing vertex positions on the new mesh, subdividing the original mesh, then applying the precomputed positions
+              onto the subdivided mesh. New vertex positions were the result of a weighted average of neighboring vertices. I used a vector to hold the original mesh's edges
+              so that I could iterate over the original mesh's edges and split them without iterating across the newly split edges.
+
+              <br />
+              <br />
+              <div align="middle">
+                  <img src="img/teapotUpsample.png" align="middle" width="400px" />
+                  <figcaption align="middle">Upsampling a teapot's mesh</figcaption>
+              </div>
+          </p>
+
+          <p>
+              Sharp edges and corners are rounded out by loop subdivision, which is an undesireable quality for many shapes like cubes.
+
+              <br />
+              <br />
+              <div align="middle">
+                  <img src="img/cubeUpsample.png" align="middle" width="400px" />
+                  <figcaption align="middle">Upsampling a cube's mesh</figcaption>
+              </div>
+          </p>
+
+          <p>
+              Increasing the number of triangles by splitting the faces into more triangles can help offset some of the rounding, but not by much. Many shapes
+              like this cube also become mildly deformed by repeated subdivision. In the case of the cube, this deformation manifests as becoming asymmetric.
+              This happens because the locations of new vertices are approximated using the surrounding vertices locations. Any small rounding errors can accumulate
+              when the subdivide operation is repeated, forming small irregularities. These can be somewhat mitigated by splitting the faces into more triangles
+              before subdividing.
+          </p>
+
+          <br />
+          <br />
+          <div align="middle">
+              <img src="img/cubeSplitUpsample.png" align="middle" width="400px" />
+              <figcaption align="middle">Splitting the cube's face before upsampling</figcaption>
+          </div>
+
+          <p>
+              In this scenario, the cube is split before upsampling, making the resulting subdivided mesh more symmetric and retaining a little more of the original
+              cube shape. The more triangles on a face, the less the corners will deviate from their original positions as a result of the averaging function,
+              allowing the original cube shape to be retained more.
+          </p>
+
+          <p>
+              Website URL: https://cal-cs184-student.github.io/sp22-project-webpages-GalliumCat/
+          </p>
+
+      </div></body>
+
 </html>
