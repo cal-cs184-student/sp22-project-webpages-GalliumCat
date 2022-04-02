@@ -1,7 +1,162 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Project 3-2 here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Kathiravan Kannan  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3: PathTracer</h1>
+    <h2 align="middle">Kathiravan Kannan</h2>
+
+    <div class="padded">
+        <p>
+			In this project, I implemented rendering for mirror, glass, and microfaceted materials. This was done through modifying the sample methods used to calculate BSDF within each individual material. 
+		</p>
+
+    <h2 align="middle">Part 1: Mirror/Glass Materials</h2>
+        <p>Mirror and glass materials are similar in that they both refract/reflect light in a certain way to achieve their appearance. They both use similar light equations to calculate where the next bounce is.</p>
+        
+		<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/spheres_0.png" align="middle" width="500px" />
+                    </td>
+                    <td>
+                        <img src="images/spheres_1.png" align="middle" width="500px" />
+                    </td>
+                </tr>
+            </table>
+            <figcaption align="middle">Spheres with 0 ray depth (left) and 1 ray depth (right)</figcaption>
+        </div>
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/spheres_2.png" align="middle" width="500px" />
+                    </td>
+                    <td>
+                        <img src="images/spheres_3.png" align="middle" width="500px" />
+                    </td>
+                </tr>
+            </table>
+            <figcaption align="middle">Spheres with 2 ray depth (left) and 3 ray depth (right)</figcaption>
+		<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/spheres_4.png" align="middle" width="500px" />
+                    </td>
+                    <td>
+                        <img src="images/spheres_5.png" align="middle" width="500px" />
+                    </td>
+                </tr>
+            </table>
+            <figcaption align="middle">Spheres with 4 ray depth (left) and 5 ray depth (right)</figcaption>
+		<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/spheres_100.png" align="middle" width="500px" />
+                    </td>
+                </tr>
+            </table>
+            <figcaption align="middle">Spheres with 100 ray depth</figcaption>
+        </div>
+		
+		<p>
+		At zero bounces, only light sources are visible. At one bounce, surfaces directly impacted by light can be seen. At two bounces, mirroring can be seen a little on the left sphere. Light bounces from the light source towards the camera off of the sphere. The right ball does not receive light directly from the ceiling but instead receives it bounces off the wall, so reflections from it only show up at three bounces. At four bounces, the reflection of the right sphere on the left sphere can now be seen (bouncing off the left and right spheres). The only difference from then on is in increasing the image clarity and global illumination, because there are no more mirror surfaces in view that are not reached at the current bounce level.
+		</p>
+		
+		
+	<h2 align="middle">Part 2: Microfaceted materials</h2>
+        <p>
+		In this part, I implemented rendering microfaceted materials. These include materials like gold, silver, and copper. This involved calculating normals and sampling over NDFs.
+		
+		</p>
+        
+		<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/dragon5.png" align="middle" width="500px" />
+                    </td>
+                    <td>
+                        <img src="images/dragon25.png" align="middle" width="500px" />
+                    </td>
+                </tr>
+            </table>
+            <figcaption align="middle">Dragon with 0.5 alpha (left) and 0.25 alpha (right)</figcaption>
+        </div>
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/dragon05.png" align="middle" width="500px" />
+                    </td>
+                    <td>
+                        <img src="images/dragon005.png" align="middle" width="500px" />
+                    </td>
+                </tr>
+            </table>
+            <figcaption align="middle">Dragon with 0.05 alpha (left) and 0.005 alpha (right)</figcaption>
+
+		<p>
+		
+		As alpha decreases, the surface becomes glossier and glossier. As it increases, it grows more diffuse. This makes sense, because alpha is a measure of the surface's roughness. At .5, the image appears to be completely diffuse. At .25, glossiness begins to be visible at certain parts along the dragon's neck. At .05, glossiness is clearly visible and the dragon looks shiny. At .005, the dragon does not appear to have any diffuse at all, and is completely shiny.
+		
+		</p>
+		
+		<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/bunny_bad.png" align="middle" width="500px" />
+                    </td>
+                    <td>
+                        <img src="images/bunny.png" align="middle" width="500px" />
+                    </td>
+                </tr>
+            </table>
+            <figcaption align="middle">Bunny with hemisphere sampling (left) and importance sampling (right)</figcaption>
+        </div>
+		
+		<p>
+			Importance sampling clearly converges much faster than hemisphere sampling. The bunny on the left has enough noise that the image cannot be seen clearly, while on the right the image is visible. Both of these were taken with a relatively low sample rate -- if the sample rate were high enough, the differences between the two would be more negligible.
+		</p>
+		
+		<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/bunny_silver.png" align="middle" width="500px" />
+                    </td>
+				</tr>
+			</table>
+			<figcaption align="middle">Bunny with silver material</figcaption>
+		</div>
+		
+		<p>
+		All the previous images used a copper bunny. This bunny has the same eta and k-values as silver, giving it a more gray hue.
+		</p>
+		
+		 <p>
+              Website URL: https://cal-cs184-student.github.io/sp22-project-webpages-GalliumCat/
+          </p>
+</div>
+</body>
 </html>
+
+
+
+
